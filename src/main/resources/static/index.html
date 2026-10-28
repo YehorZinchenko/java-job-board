@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Zinchenko · Job Board</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<header><span class="logo">Jobs</span><strong>ZINCHENKO</strong><span class="tag">JOB BOARD</span></header>
+<main>
+<section class="intro"><p class="eyebrow">YOUR NEXT OPPORTUNITY</p><h1>Good work starts<br>with a good match.</h1><p>A simple place to collect and manage job opportunities.</p></section>
+<div class="layout">
+<section aria-labelledby="vacancies"><div class="section-head"><h2 id="vacancies">Vacancies <span id="count">0</span></h2></div>
+<form id="search"><label for="query">Search by role or company</label><div class="search-row"><input id="query" maxlength="100" placeholder="Try Java developer"><button>Search</button></div></form>
+<p id="message" role="status" aria-live="polite"></p><div id="jobs"></div></section>
+<aside><p class="eyebrow">BUILD YOUR LIST</p><h2 id="form-title">Add a vacancy</h2><form id="job-form">
+<label for="title">Job title</label><input id="title" name="title" required maxlength="100" placeholder="Junior Java Developer">
+<label for="company">Company</label><input id="company" name="company" required maxlength="100" placeholder="Company name">
+<label for="location">Location</label><input id="location" name="location" required maxlength="100" placeholder="Warsaw / Remote">
+<label for="experienceYears">Years of experience</label><input id="experienceYears" name="experienceYears" type="number" min="0" max="50" value="0" required>
+<label for="description">Description</label><textarea id="description" name="description" required maxlength="4000" rows="5" placeholder="Responsibilities, skills and what makes this role interesting"></textarea>
+<button id="save" class="primary">Save vacancy</button><button id="cancel" type="button" hidden>Cancel editing</button>
+<p id="form-message" role="status" aria-live="polite"></p></form></aside>
+</div></main><footer>Java 21 · Spring Boot · Built to learn, made to work.</footer>
+</body></html>
