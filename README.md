@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Job Board
 
 A local job vacancy manager built with Java 21 and Spring Boot. This is a junior Java portfolio project with a REST API, a browser interface and a relational database.
@@ -95,3 +96,7 @@ Author
 
 Yehor Zinchenko. Learning Java backend development and data engineering.
 GitHub: https://github.com/YehorZinchenko
+=======
+# java-job-board
+Java-spring project
+>>>>>>> aff388b5f38a84858d3bfe16748daff2f673e089
