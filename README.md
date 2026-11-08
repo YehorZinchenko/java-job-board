@@ -1,102 +1,311 @@
-<<<<<<< HEAD
-Job Board
+# Java Job Board — Spring Boot REST API
 
-A local job vacancy manager built with Java 21 and Spring Boot. This is a junior Java portfolio project with a REST API, a browser interface and a relational database.
+A full-stack job vacancy management application built with **Java 21 and Spring Boot**. The project demonstrates backend development fundamentals, RESTful API design, database persistence, input validation, layered architecture, and automated integration testing.
 
-Features
+The application provides a browser-based interface for managing job vacancies and a REST API for creating, retrieving, updating, deleting, and searching job listings.
 
-The application lets you create, view, edit and delete vacancies. Each vacancy contains a job title, company, location, description and required years of experience. You can search by title or company without matching letter case.
+## Tech Stack
 
-The server validates required fields, text lengths and experience between 0 and 50 years. Invalid requests return 400, missing vacancies return 404, successful creation returns 201 and deletion returns 204.
+**Backend**
+- Java 21
+- Spring Boot 3.5
+- Spring Web
+- Spring Data JPA / Hibernate
+- Jakarta Bean Validation
+- Maven
 
-Technology
+**Database**
+- H2 relational database
+- JPA entity mapping and repository abstraction
 
-Java 21, Spring Boot 3.5.16, Spring Web, Spring Data JPA, Hibernate, Jakarta Validation and H2. The interface uses HTML, CSS and plain JavaScript. Tests use JUnit 5, MockMvc and AssertJ.
+**Frontend**
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- Fetch API
 
-The project includes Maven Wrapper configured for Maven 4.0.0-rc-4, a preview release of Maven 4. A separate Maven installation is not required.
+**Testing**
+- JUnit 5
+- Spring Boot Test
+- MockMvc
+- AssertJ
 
-Running locally
+**Development**
+- Git and GitHub
+- IntelliJ IDEA
+- Maven Wrapper
 
-Install JDK 21 and open a terminal in the project directory. Internet access is required for the first dependency download.
+## Features
 
-Run this command:
+### Job Vacancy Management
+- Create new job vacancies
+- Retrieve all vacancies or view a specific vacancy
+- Update existing vacancy information
+- Delete vacancies
+- Search vacancies by job title or company name
+- Perform case-insensitive searches
 
-    ./mvnw spring-boot:run
+Each vacancy contains:
+- Job title
+- Company
+- Location
+- Description
+- Required years of experience
 
-Open http://localhost:8080 in your browser. Stop the server with Ctrl+C.
+### Validation and Error Handling
 
-If port 8080 is occupied, stop the previous application instance or use another port:
+The application validates incoming requests and provides appropriate HTTP responses.
 
-    PORT=8088 ./mvnw spring-boot:run
+- `200 OK` — successful retrieval or update
+- `201 Created` — vacancy successfully created
+- `204 No Content` — vacancy successfully deleted
+- `400 Bad Request` — invalid input or malformed request
+- `404 Not Found` — requested vacancy does not exist
 
-Then open http://localhost:8088. Localhost addresses work only while the server is running on your computer.
+Input validation includes required fields, text length restrictions, and acceptable experience values from 0 to 50 years.
 
-Using IntelliJ IDEA
+## Application Architecture
 
-Open pom.xml as a Maven project, select JDK 21 and wait for Maven to load the dependencies. Run JobBoardApplication.
+The application follows a layered design, separating HTTP handling, business logic, and database access.
 
-If the IDE reports Java 5 or source version 1.5, check that the module language level and compiler target are 21, select Maven Wrapper and reload the Maven project.
+```text
+Browser / HTTP Client
+        |
+        v
+   JobController
+        |
+        v
+    JobService
+        |
+        v
+   JobRepository
+        |
+        v
+   H2 Database
+```
 
-Run only one instance against the local H2 database at a time. A second instance can fail because the database file is already in use.
+**Main components**
 
-Building and testing
+| Component | Responsibility |
+|---|---|
+| `JobBoardApplication` | Starts the Spring Boot application |
+| `JobController` | Handles HTTP requests and API endpoints |
+| `JobService` | Implements application logic and transaction management |
+| `JobRepository` | Provides database operations through Spring Data JPA |
+| `Job` | Maps vacancy data to the relational database |
+| `JobRequest` | Defines request fields and validation rules |
+| `ApiExceptionHandler` | Handles validation and missing-resource errors |
 
-Run the tests:
+The frontend communicates with the backend through HTTP requests using JavaScript.
 
-    ./mvnw test
+## REST API Endpoints
 
-Build and verify the application:
+Base URL: `http://localhost:8080/api/jobs`
 
-    ./mvnw clean verify
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/jobs` | Retrieve all vacancies |
+| GET | `/api/jobs?q=java` | Search by title or company |
+| GET | `/api/jobs/{id}` | Retrieve a vacancy by ID |
+| POST | `/api/jobs` | Create a new vacancy |
+| PUT | `/api/jobs/{id}` | Update an existing vacancy |
+| DELETE | `/api/jobs/{id}` | Delete a vacancy |
 
-Run the resulting JAR from the project directory:
+### Example: Create a Vacancy
 
-    java -jar target/job-board-1.0.0.jar
+**Request**
 
-Seven integration tests cover CRUD operations, search, validation, rejected updates, missing records, malformed requests and HTML delivery. They use a separate in-memory H2 database and do not modify saved local vacancies. Browser interactions are checked manually.
+```http
+POST /api/jobs
+Content-Type: application/json
+```
 
-How the application works
+```json
+{
+  "title": "Junior Java Developer",
+  "company": "Tech Company",
+  "location": "Krakow",
+  "description": "Develop and maintain Java applications.",
+  "experienceYears": 1
+}
+```
 
-JobBoardApplication starts Spring Boot and the embedded web server. JobController handles HTTP requests. JobRequest defines the input fields and validation rules. JobService coordinates operations and transaction boundaries. JobRepository accesses the database through Spring Data JPA. Job maps vacancy data to the jobs table. ApiExceptionHandler formats validation and missing-record errors.
+**Example successful response**
 
-The static interface is in src/main/resources/static. JavaScript sends requests to the API and displays the results. Application settings are in src/main/resources/application.properties. Integration tests are in JobApiTests.java.
+HTTP status: `201 Created`
 
-API
+```json
+{
+  "id": 1,
+  "title": "Junior Java Developer",
+  "company": "Tech Company",
+  "location": "Krakow",
+  "description": "Develop and maintain Java applications.",
+  "experienceYears": 1
+}
+```
 
-GET /api/jobs lists vacancies, highest ID first.
-GET /api/jobs?q=java searches titles and companies.
-GET /api/jobs/{id} retrieves one vacancy.
-POST /api/jobs creates a vacancy.
-PUT /api/jobs/{id} replaces all editable fields.
-DELETE /api/jobs/{id} deletes a vacancy.
+The identifier is generated by the database.
 
-POST and PUT accept JSON with title, company, location, description and experienceYears. The database generates the ID. Validation errors include field-specific messages in an errors object.
+## Automated Testing
 
-Data storage
+The project includes **7 integration tests** covering application behavior and REST API responses.
 
-Vacancies are saved in the data directory relative to the application's working directory. They remain after a restart. Run from the same directory to keep using the same database. Local data, build output and IntelliJ settings are excluded from Git.
+The tests verify:
 
-To reset the database, stop the application and remove the data directory. This deletes all saved vacancies.
+- Creating, reading, updating, and deleting vacancies
+- Searching by job title or company
+- Case-insensitive search behavior
+- Input validation and invalid requests
+- Rejected updates without unintended data changes
+- Handling nonexistent resources
+- Malformed JSON and invalid identifiers
+- Browser interface availability
 
-Project scope
+Tests use JUnit 5, MockMvc, and AssertJ with a dedicated in-memory H2 database.
 
-This is a local learning application without accounts or access control. It listens on 127.0.0.1. Possible improvements include pagination, location filtering, vacancy statuses, PostgreSQL, database migrations and automated browser tests.
+Run all tests:
 
-Documentation
+```bash
+./mvnw test
+```
 
-A detailed Russian code walkthrough is available in docs/Job-Board-Code-Guide-RU.pdf.
+Run the full build and verification:
 
-Project background
+```bash
+./mvnw clean verify
+```
 
-The idea was inspired by studying the Telusko Spring course. This application was implemented separately without copying course source files. Spring Initializr provided the standard starter and Maven Wrapper. Implementation and documentation were created with Codex assistance.
+## Getting Started
 
-Original course: https://github.com/navinreddy20/spring6-course
+### Prerequisites
 
-Author
+- Java Development Kit (JDK) 21
+- Git
+- IntelliJ IDEA or another Java IDE (optional)
 
-Yehor Zinchenko. Learning Java backend development and data engineering.
-GitHub: https://github.com/YehorZinchenko
-=======
-# java-job-board
-Java-spring project
->>>>>>> aff388b5f38a84858d3bfe16748daff2f673e089
+The project includes the Maven Wrapper, so a separate Maven installation is not required.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/YehorZinchenko/java-job-board.git
+cd java-job-board
+```
+
+### 2. Run the Application
+
+On macOS or Linux:
+
+```bash
+./mvnw spring-boot:run
+```
+
+On Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+### 3. Open the Application
+
+Open your browser and navigate to:
+
+`http://localhost:8080`
+
+The web interface allows you to manage job vacancies directly in the browser.
+
+### 4. Build the Application
+
+```bash
+./mvnw clean package
+```
+
+Run the generated JAR:
+
+```bash
+java -jar target/job-board-1.0.0.jar
+```
+
+## Database Persistence
+
+The application uses an H2 relational database configured for local persistence.
+
+- Vacancy data is stored locally.
+- Records remain available after application restarts.
+- The database is accessed through Spring Data JPA.
+- Integration tests use a separate in-memory database.
+
+Local database files are excluded from version control.
+
+## Project Structure
+
+```text
+src/
+├── main/
+│   ├── java/com/zinchenko/jobboard/
+│   │   ├── JobBoardApplication.java
+│   │   ├── common/
+│   │   │   └── ApiExceptionHandler.java
+│   │   └── job/
+│   │       ├── Job.java
+│   │       ├── JobController.java
+│   │       ├── JobNotFoundException.java
+│   │       ├── JobRepository.java
+│   │       ├── JobRequest.java
+│   │       └── JobService.java
+│   └── resources/
+│       ├── application.properties
+│       └── static/
+│           ├── index.html
+│           ├── style.css
+│           └── app.js
+└── test/
+    └── java/com/zinchenko/jobboard/
+        └── JobApiTests.java
+```
+
+## Current Limitations and Future Improvements
+
+This is a local portfolio and learning application rather than a production-ready service.
+
+Potential improvements include:
+
+- PostgreSQL integration
+- Pagination and advanced vacancy filtering
+- User authentication and authorization
+- OpenAPI / Swagger documentation
+- Database migrations with Flyway
+- Docker containerization
+- CI/CD automation with GitHub Actions
+- Additional unit and integration tests
+
+## Learning Objectives
+
+This project was developed to strengthen practical skills in:
+
+- Object-oriented programming in Java
+- Spring Boot application development
+- RESTful API design
+- Layered backend architecture
+- Relational databases and ORM
+- Validation and exception handling
+- Automated integration testing
+- Maven build management
+- Git-based version control
+
+## Project Background
+
+The project was developed as a Java backend learning and portfolio exercise, following initial exposure to Spring development through the Telusko Spring course.
+
+The implementation was developed as a separate application, using Spring Initializr for initial project setup and AI-assisted development tools for implementation support and documentation.
+
+## Author
+
+**Yehor Zinchenko**
+
+Junior Java Developer | Java Backend & Data Engineering
+
+[GitHub Profile](https://github.com/YehorZinchenko)
+
+[LinkedIn](https://www.linkedin.com/in/yehor-zinchenko-913b73117/)
